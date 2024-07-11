@@ -7,6 +7,7 @@ export default function Index() {
     <View style={styles.container}>
       <Text>Aora!</Text>
       <StatusBar style="auto" />
+      <Link href="/profile" style={{color: 'blue'}}>Go To Profile</Link>
     </View>
   );
 }
