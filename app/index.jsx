@@ -6,8 +6,13 @@ import 'react-native-url-polyfill/auto'
 
 import { images } from '../constants';
 import CustomButton from '../components/CustomButton';
+import { useGlobalContext } from '../context/GlobalProvider';
 
 export default function Index() {
+  const{loading, loggedIn} = useGlobalContext();
+
+  if(!loading && loggedIn) return <Redirect href="/home"/>
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{height:'100%'}}>

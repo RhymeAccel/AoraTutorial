@@ -7,6 +7,7 @@ import {images} from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { createUser } from '../../lib/appwrite'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const SignUp = () => {
 
@@ -16,23 +17,27 @@ const SignUp = () => {
     password:''
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  const {setUser, setLoggedIn } = useGlobalContext();
 
   const submit = async () => {
     if (!form.username || !form.password || !form.email){ 
       Alert.alert('Error', "Please fill in all the fields")
     }
 
-    setIsSubmitting(true);
+    setSubmitting(true);
 
     try {
       const result = await createUser(form.email, form.password, form.username)
-      // set it to global state
+      setUser(result);
+      setLoggedIn(true);
+
       router.replace('/home')
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally{
-      setIsSubmitting(false)
+      setSubmitting(false)
     }
   }
 
@@ -70,7 +75,7 @@ const SignUp = () => {
           title="Sign Up"
           handlePress={submit}
           containerStyles="mt-7"
-          isLoading={isSubmitting}
+          isLoading={submitting}
           />
           <View className="justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">

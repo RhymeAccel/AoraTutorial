@@ -6,7 +6,8 @@ import { Link, router } from 'expo-router'
 import {images} from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
-import { signIn } from '../../lib/appwrite'
+import { getCurrentUser, signIn } from '../../lib/appwrite'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const SignIn = () => {
 
@@ -15,23 +16,29 @@ const SignIn = () => {
     password:''
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  const {setUser, setLoggedIn } = useGlobalContext();
 
   const submit = async () => {
     if (!form.password || !form.email){ 
       Alert.alert('Error', "Please fill in all the fields")
     }
 
-    setIsSubmitting(true);
+    setSubmitting(true);
 
     try {
       await signIn(form.email, form.password)
-      // set it to global state
+      const result = await getCurrentUser();
+      setUser(result);
+      setLoggedIn(true);
+      // Check if this works
+      Alert.alert("Success", `${result.$id} User signed in successfully`);
       router.replace('/home')
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally{
-      setIsSubmitting(false)
+      setSubmitting(false)
     }
   }
 
@@ -63,7 +70,7 @@ const SignIn = () => {
           title="Sign In"
           handlePress={submit}
           containerStyles="mt-7"
-          isLoading={isSubmitting}
+          isLoading={submitting}
           />
           <View className="justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
