@@ -8,9 +8,10 @@ import EmptyState from '../../components/EmptyState'
 import { getAllPosts, getLatestPost } from '../../lib/appwrite'
 import useAppwrite from '../../lib/useAppwrite'
 import VideoCard from '../../components/VideoCard'
-
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const Home = () => {
+  const {user, setUser, setLoggedIn} = useGlobalContext()
   const {data: posts, refetch} = useAppwrite(getAllPosts)
   const {data: latestPosts} = useAppwrite(getLatestPost)
   const [refreshing, setRefreshing] = useState(false)
@@ -37,7 +38,7 @@ const Home = () => {
                 Welcome Back
               </Text>
               <Text className="text-2xl font-psemibold text-white">
-                Rhyme
+                {user?.username}
               </Text>
             </View>
 
@@ -60,12 +61,12 @@ const Home = () => {
           <Trending posts={latestPosts ?? []}/>
         </View>
        )}
-      ListEmptyComponent={() => {
+      ListEmptyComponent={() => (
         <EmptyState
         title="No Videos Found"
         subtitle="Be the first one to upload a video"
         />
-      }}
+      )}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       />
     </SafeAreaView>

@@ -10,16 +10,14 @@ import { createUser } from '../../lib/appwrite'
 import { useGlobalContext } from '../../context/GlobalProvider'
 
 const SignUp = () => {
+  const [submitting, setSubmitting] = useState(false)
+  const {setUser, setLoggedIn } = useGlobalContext();
 
   const[form, setForm] = useState({
     username:'',
     email:'',
     password:''
   })
-
-  const [submitting, setSubmitting] = useState(false)
-
-  const {setUser, setLoggedIn } = useGlobalContext();
 
   const submit = async () => {
     if (!form.username || !form.password || !form.email){ 
